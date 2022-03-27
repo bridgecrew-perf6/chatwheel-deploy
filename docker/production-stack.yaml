@@ -1,0 +1,108 @@
+version: '3.9'
+
+services:
+
+  front-end:
+    image: wisecat/chatwheel-frontend
+    working_dir: /app
+    restart: always
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ../upload:/app/upload
+      - ../thumbs:/app/thumbs
+    links:
+      - node-app
+    secrets:
+      - NGINX_CONF_FULL_CHAIN_PEM
+      - NGINX_CONF_PRIVATE_KEY_PEM
+      - NGINX_CONF_SSL_DHPARAMS_PEN
+    deploy:
+      replicas: 4
+
+  node-app:
+    image: wisecat/chatwheel-backend
+    working_dir: /app
+    restart: always
+    volumes:
+      - ../upload:/app/upload
+      - ../thumbs:/app/thumbs
+    links:
+      - mongodb-service
+    command: 'npm run start:prod'
+    environment:
+      NODE_ENV: 'production'
+      APP_SECRET_FILE: '/run/secrets/APP_SECRET_FILE'
+      EMAIL_NO_REPLY: 'chatwheel.noreply@gmail.com'
+      EMAIL_SENDER_API_KEY_FILE: '/run/secrets/EMAIL_SENDER_API_KEY_FILE'
+      MONGO_INITDB_ROOT_USERNAME_FILE: '/run/secrets/MONGO_INITDB_ROOT_USERNAME_FILE'
+      MONGO_INITDB_ROOT_PASSWORD_FILE: '/run/secrets/MONGO_INITDB_ROOT_PASSWORD_FILE'
+      MONGO_DATABASE_NAME: 'chatwheel'
+      MONGO_DATABASE_PORT: '27017'
+      PORT: '3000'
+      EMAIL_LINK_HOST: 'www.chatwheel.ru'
+      UPLOAD_DIRECTORY: '/app/upload'
+      IMAGE_THUMB_DIRECTORY: '/app/thumbs'
+      MAX_UPLOAD_FILE_SIZE: '7340032' # 7M
+      RESTORE_PASSWORD_REQUEST_INTERVAL: 120 #How long should the user wait before they would have a chance to request a new password-restore key(is seconds)
+      USER_NEARBY_SEARCH_MAX_RADIUS_M: 30000
+      CHAT_ROULETTE_OFFER_AWAIT_TIME: 30000
+      FACEBOOK_APP_ID_FILE: '/run/secrets/FACEBOOK_APP_ID_FILE'
+      FACEBOOK_APP_SECRET_FILE: '/run/secrets/FACEBOOK_APP_SECRET_FILE'
+    secrets:
+      - APP_SECRET_FILE
+      - EMAIL_SENDER_API_KEY_FILE
+      - MONGO_INITDB_ROOT_USERNAME_FILE
+      - MONGO_INITDB_ROOT_PASSWORD_FILE
+      - FACEBOOK_APP_ID_FILE
+      - FACEBOOK_APP_SECRET_FILE
+    deploy:
+      replicas: 4
+
+
+  mongodb-service:
+    image: mongo:4.0.10-xenial
+    restart: always
+    volumes:
+      - chatwheel_db_dev:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: 'chatwheel'
+      MONGO_INITDB_ROOT_USERNAME_FILE: '/run/secrets/MONGO_INITDB_ROOT_USERNAME_FILE'
+      MONGO_INITDB_ROOT_PASSWORD_FILE: '/run/secrets/MONGO_INITDB_ROOT_PASSWORD_FILE'
+      command: mongod --replSet rs_chatwheel
+    secrets:
+      - MONGO_INITDB_ROOT_USERNAME_FILE
+      - MONGO_INITDB_ROOT_PASSWORD_FILE
+    deploy:
+      replicas: 1
+
+
+secrets:
+
+  NGINX_CONF_FULL_CHAIN_PEM:
+    external: true
+
+  NGINX_CONF_PRIVATE_KEY_PEM:
+    external: true
+
+  NGINX_CONF_SSL_DHPARAMS_PEN:
+    external: true
+
+  APP_SECRET_FILE:
+    external: true
+
+  EMAIL_SENDER_API_KEY_FILE:
+    external: true
+
+  MONGO_INITDB_ROOT_USERNAME_FILE:
+    external: true
+
+  MONGO_INITDB_ROOT_PASSWORD_FILE:
+    external: true
+
+  FACEBOOK_APP_ID_FILE:
+    external: true
+
+  FACEBOOK_APP_SECRET_FILE:
+    external: true

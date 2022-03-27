@@ -1,0 +1,11 @@
+FROM node:16.13.2-stretch
+
+RUN npm install -g sharp@0.30.0
+
+RUN npm install -g typescript@^4.3.5 \
+    && npm i -g @nestjs/cli@^8.0.0
+
+CMD [ "node" ]
+
+
+
