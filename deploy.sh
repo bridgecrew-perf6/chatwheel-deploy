@@ -11,4 +11,5 @@ docker stack rm chatwheel-production
 
 # Get the new production stack up and run
   # Get the docker swarm stack with the file ./docker/production-stack.yaml up and run
+docker stack deploy --compose-file docker/production-stack.yaml chatwheel-production
 
