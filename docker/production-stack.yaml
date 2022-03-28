@@ -64,10 +64,11 @@ services:
     healthcheck:
       test: CMD curl -f http://localhost:3000/api/health/core/ping || exit 1
 
-
   mongodb-service:
     image: mongo:4.0.10-xenial
     restart: always
+    ports:
+      - '27017:27017'
     volumes:
       - chatwheel_db_dev:/data/db
     environment:
