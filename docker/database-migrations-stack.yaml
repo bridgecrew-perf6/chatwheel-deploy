@@ -20,6 +20,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD_FILE: '/run/secrets/MONGO_INITDB_ROOT_PASSWORD_FILE'
       MONGO_DATABASE_NAME: 'chatwheel'
       MONGO_DATABASE_PORT: '27017'
+      MONGO_DATABASE_REPLICA_SET: 'rs_chatwheel'
       PORT: '3000'
       EMAIL_LINK_HOST: 'www.chatwheel.ru'
       UPLOAD_DIRECTORY: '/app/upload'
@@ -43,6 +44,8 @@ services:
 
   mongodb-service:
     image: mongo:4.0.10-xenial
+    ports:
+      - '27017:27017'
     volumes:
       - chatwheel_db:/data/db
     environment:

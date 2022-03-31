@@ -22,7 +22,7 @@ fi
 cd ./backend_src && git pull origin main && cd ..
 
   # Build the backend app using the image built by the ./backend-app-build-tool.docker file
-docker run --rm -v $(pwd)/backend_src/app:/app -w /app wisecat/chatwheel-backend-build npm install
+docker run --rm -v $(pwd)/backend_src/app:/app -w /app wisecat/chatwheel-backend-build npm install --production
 docker run --rm -v $(pwd)/backend_src/app:/app -w /app wisecat/chatwheel-backend-build npm run build
 
   # Remove the existing image with the tag wisecat/chatwheel-backend

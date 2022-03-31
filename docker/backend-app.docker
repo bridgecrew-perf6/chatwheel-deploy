@@ -5,6 +5,7 @@ RUN npm install -g sharp@0.30.0
 WORKDIR /app
 
 COPY backend_src/app/package.json .
+COPY backend_src/app/package-lock.json .
 COPY backend_src/app/migrate-mongo-config.js .
 COPY backend_src/app/migrations ./migrations
 COPY backend_src/app/node_modules ./node_modules
