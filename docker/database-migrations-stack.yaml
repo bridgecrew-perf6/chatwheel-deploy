@@ -43,7 +43,6 @@ services:
 
   mongodb-service:
     image: mongo:4.0.10-xenial
-    restart: always
     volumes:
       - chatwheel_db:/data/db
     environment:

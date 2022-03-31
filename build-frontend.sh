@@ -25,7 +25,7 @@ docker build --no-cache -t wisecat/frontend-app-build-tool -f docker/frontend-ap
     # Install npm packages using the docker image wisecat/frontend-app-build-tool
 docker run --rm -v $(pwd)/frontend_src/app:/app -w /app wisecat/frontend-app-build-tool npm install
     # Build the application itself using the docker image wisecat/frontend-app-build-tool
-docker run --rm -v $(pwd)/frontend_src/app:/app -w /app wisecat/frontend-app-build-tool ng build --aot
+docker run --rm -v $(pwd)/frontend_src/app:/app -w /app wisecat/frontend-app-build-tool ng build --prod --aot --build-optimizer
 
   # Remove the existing image with the tag wisecat/chatwheel-frontend
 docker image rm wisecat/chatwheel-frontend
