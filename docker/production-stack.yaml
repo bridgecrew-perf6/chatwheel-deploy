@@ -116,7 +116,7 @@ secrets:
   NGINX_CONF_PRIVATE_KEY_PEM:
     external: true
 
-  NGINX_CONF_SSL_DHPARAMS_PEN:
+  NGINX_CONF_SSL_DHPARAMS_PEM:
     external: true
 
   APP_SECRET_FILE:
