@@ -45,18 +45,20 @@ services:
     image: mongo:4.0.10-xenial
     restart: always
     volumes:
-      - chatwheel_db_dev:/data/db
+      - chatwheel_db:/data/db
     environment:
       MONGO_INITDB_DATABASE: 'chatwheel'
       MONGO_INITDB_ROOT_USERNAME_FILE: '/run/secrets/MONGO_INITDB_ROOT_USERNAME_FILE'
       MONGO_INITDB_ROOT_PASSWORD_FILE: '/run/secrets/MONGO_INITDB_ROOT_PASSWORD_FILE'
-      command: mongod --replSet rs_chatwheel
+    command: mongod --replSet rs_chatwheel
     secrets:
       - MONGO_INITDB_ROOT_USERNAME_FILE
       - MONGO_INITDB_ROOT_PASSWORD_FILE
     deploy:
       replicas: 1
 
+volumes:
+  chatwheel_db:
 
 secrets:
   APP_SECRET_FILE:
