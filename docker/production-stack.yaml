@@ -23,8 +23,12 @@ services:
         condition: on-failure
         delay: 5s
         window: 5s
-    healthcheck:
-      test: service nginx status || exit 1
+#    healthcheck:
+#      test: service nginx status || exit 1
+#      interval: 10s
+#      timeout: 10s
+#      retries: 5
+#      start_period: 40s
     configs:
       - source: OPTIONS_SSL_NGINX_CONF
         target: /etc/nginx/options-ssl-nginx.conf
@@ -71,15 +75,19 @@ services:
         condition: on-failure
         delay: 5s
         window: 15s
-    healthcheck:
-      test: CMD curl -f http://localhost:3000/api/health/core/ping || exit 1
+#    healthcheck:
+#      test: CMD curl -f http://localhost:3000/api/health/core/ping || exit 1
+#      interval: 10s
+#      timeout: 10s
+#      retries: 5
+#      start_period: 40s
 
   mongodb-service:
     image: mongo:4.0.10-xenial
     ports:
       - '27017:27017'
     volumes:
-      - chatwheel_db:/data/db
+      - ../../database:/data/db
     environment:
       MONGO_INITDB_DATABASE: 'chatwheel'
       MONGO_INITDB_ROOT_USERNAME_FILE: '/run/secrets/MONGO_INITDB_ROOT_USERNAME_FILE'
@@ -100,9 +108,6 @@ services:
       timeout: 10s
       retries: 5
       start_period: 40s
-
-volumes:
-  chatwheel_db:
 
 configs:
   OPTIONS_SSL_NGINX_CONF:

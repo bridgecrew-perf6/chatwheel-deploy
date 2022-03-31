@@ -47,7 +47,7 @@ services:
     ports:
       - '27017:27017'
     volumes:
-      - chatwheel_db:/data/db
+      - ../../database:/data/db
     environment:
       MONGO_INITDB_DATABASE: 'chatwheel'
       MONGO_INITDB_ROOT_USERNAME_FILE: '/run/secrets/MONGO_INITDB_ROOT_USERNAME_FILE'
@@ -58,9 +58,6 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD_FILE
     deploy:
       replicas: 1
-
-volumes:
-  chatwheel_db:
 
 secrets:
   APP_SECRET_FILE:
