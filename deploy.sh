@@ -18,7 +18,6 @@ docker stack rm chatwheel-production
   # config = rs.conf();
   # rs.reconfig(config, { force: true })
 # Run the migration command from the service backend-app
-#docker exec "$(docker ps -q -f name=node-app)" npm run migrate-mongo up
 #docker exec "$(docker container ls | grep node-app | awk '{print $(NF)}' | head -n 1)" npm run migrate-mongo up
     # Shutdown the migration docker swarm stack
 #docker stack rm database-migration-stack
