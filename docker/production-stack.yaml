@@ -39,6 +39,7 @@ services:
     volumes:
       - ../upload:/app/upload
       - ../thumbs:/app/thumbs
+      - ../app-logs:/root/.npm/_logs
     links:
       - mongodb-service
     command: 'npm run start:prod'
@@ -87,7 +88,7 @@ services:
     ports:
       - '27017:27017'
     volumes:
-      - ../../database:/data/db
+      - chatwheel-db-prod:/data/db
     environment:
       MONGO_INITDB_DATABASE: 'chatwheel'
       MONGO_INITDB_ROOT_USERNAME_FILE: '/run/secrets/MONGO_INITDB_ROOT_USERNAME_FILE'
@@ -112,6 +113,9 @@ services:
 configs:
   OPTIONS_SSL_NGINX_CONF:
     external: true
+
+volumes:
+  chatwheel-db-prod:
 
 secrets:
 

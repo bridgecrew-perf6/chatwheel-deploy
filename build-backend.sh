@@ -30,13 +30,3 @@ docker image rm wisecat/chatwheel-backend
   # Build the new version of the backend application with the ./docker/backend-app.docker getting it tagged with wisecat/chatwheel-backend
 docker build --no-cache -t wisecat/chatwheel-backend -f docker/backend-app.docker .
     # It should copy the production-build result formed by the build tools(see the ./backend_src/dist directory)
-
-
-  # Perform the database migrations
-    # Get the docker swarm up and run using the database-migrations-stack.yaml file
-docker stack deploy --compose-file docker/database-migrations-stack.yaml database-migration-stack
-    # Run the migration command from the service backend-app
-#docker exec "$(docker ps -q -f name=node-app)" npm run migrate-mongo up
-docker exec "$(docker container ls | grep node-app | awk '{print $(NF)}' | head -n 1)" npm run migrate-mongo up
-    # Shutdown the migration docker swarm stack
-docker stack rm database-migration-stack
