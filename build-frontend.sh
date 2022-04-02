@@ -14,7 +14,7 @@ then
     git clone https://github.com/pavelkolomitkin/chatwheel-frontend.git frontend_src
 fi
 
-cd ./frontend_src && git pull origin main && cd ..
+cd ./frontend_src && git reset --hard HEAD && git pull origin main && cd ..
 
   # Remove the existing wisecat/frontend-app-build-tool docker image
 docker image rm wisecat/frontend-app-build-tool
