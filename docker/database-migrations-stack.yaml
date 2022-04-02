@@ -61,6 +61,7 @@ services:
 
 volumes:
   chatwheel-db-prod:
+    external: true
 
 secrets:
   APP_SECRET_FILE:

@@ -116,6 +116,7 @@ configs:
 
 volumes:
   chatwheel-db-prod:
+    external: true
 
 secrets:
 
