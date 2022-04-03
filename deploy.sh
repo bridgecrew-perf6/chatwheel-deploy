@@ -58,7 +58,7 @@ docker stack rm chatwheel-production
 echo -en '\n'
 echo -n 'Display the service message...'
 echo -en '\n'
-docker run --name update-service-message -p 80:80 -d wisecat/chatwheel-update-service-message
+docker stack deploy --compose-file docker/update-service-message-stack.yaml update-service-message
 
   # The building process is being conducted(pulling the source code and building new images)
   # The database-migrations stack is getting up and migrations are being run
@@ -71,4 +71,4 @@ docker run --name update-service-message -p 80:80 -d wisecat/chatwheel-update-se
 docker stack deploy --compose-file docker/production-stack.yaml chatwheel-production
 
   # The message stack is being removed
-docker container rm update-service-message --force
+docker stack rm update-service-message
