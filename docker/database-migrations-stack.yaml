@@ -40,24 +40,12 @@ services:
       - FACEBOOK_APP_SECRET_FILE
     deploy:
       replicas: 1
+    networks:
+      - chatwheel-backend-network
 
-
-  mongodb-service:
-    image: mongo:4.0.10-xenial
-    ports:
-      - '27017:27017'
-    volumes:
-      - chatwheel-db-prod:/data/db
-    environment:
-      MONGO_INITDB_DATABASE: 'chatwheel'
-      MONGO_INITDB_ROOT_USERNAME_FILE: '/run/secrets/MONGO_INITDB_ROOT_USERNAME_FILE'
-      MONGO_INITDB_ROOT_PASSWORD_FILE: '/run/secrets/MONGO_INITDB_ROOT_PASSWORD_FILE'
-    command: mongod --replSet rs_chatwheel
-    secrets:
-      - MONGO_INITDB_ROOT_USERNAME_FILE
-      - MONGO_INITDB_ROOT_PASSWORD_FILE
-    deploy:
-      replicas: 1
+networks:
+  chatwheel-backend-network:
+    external: true
 
 volumes:
   chatwheel-db-prod:

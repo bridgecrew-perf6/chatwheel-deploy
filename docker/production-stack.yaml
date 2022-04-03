@@ -11,8 +11,6 @@ services:
     volumes:
       - ../upload:/app/upload
       - ../thumbs:/app/thumbs
-    links:
-      - node-app
     secrets:
       - NGINX_CONF_FULL_CHAIN_PEM
       - NGINX_CONF_PRIVATE_KEY_PEM
@@ -32,6 +30,8 @@ services:
     configs:
       - source: OPTIONS_SSL_NGINX_CONF
         target: /etc/nginx/options-ssl-nginx.conf
+    networks:
+      - chatwheel-frontend-network
 
   node-app:
     image: wisecat/chatwheel-backend
@@ -40,8 +40,6 @@ services:
       - ../upload:/app/upload
       - ../thumbs:/app/thumbs
       - ../app-logs:/root/.npm/_logs
-    links:
-      - mongodb-service
     command: 'npm run start:prod'
     environment:
       NODE_ENV: 'production'
@@ -76,6 +74,9 @@ services:
         condition: on-failure
         delay: 5s
         window: 15s
+    networks:
+      - chatwheel-frontend-network
+      - chatwheel-backend-network
 #    healthcheck:
 #      test: CMD curl -f http://localhost:3000/api/health/core/ping || exit 1
 #      interval: 10s
@@ -83,39 +84,18 @@ services:
 #      retries: 5
 #      start_period: 40s
 
-  mongodb-service:
-    image: mongo:4.0.10-xenial
-    ports:
-      - '27017:27017'
-    volumes:
-      - chatwheel-db-prod:/data/db
-    environment:
-      MONGO_INITDB_DATABASE: 'chatwheel'
-      MONGO_INITDB_ROOT_USERNAME_FILE: '/run/secrets/MONGO_INITDB_ROOT_USERNAME_FILE'
-      MONGO_INITDB_ROOT_PASSWORD_FILE: '/run/secrets/MONGO_INITDB_ROOT_PASSWORD_FILE'
-    command: mongod --replSet rs_chatwheel
-    secrets:
-      - MONGO_INITDB_ROOT_USERNAME_FILE
-      - MONGO_INITDB_ROOT_PASSWORD_FILE
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 5s
-        window: 20s
-    healthcheck:
-      test: echo 'db.runCommand("ping").ok' | mongo --quiet
-      interval: 10s
-      timeout: 10s
-      retries: 5
-      start_period: 40s
-
 configs:
   OPTIONS_SSL_NGINX_CONF:
     external: true
 
 volumes:
   chatwheel-db-prod:
+    external: true
+
+networks:
+  chatwheel-backend-network:
+    external: true
+  chatwheel-frontend-network:
     external: true
 
 secrets:

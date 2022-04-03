@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  mongodb-service:
+    image: mongo:4.0.10-xenial
+    ports:
+      - '27017:27017'
+    volumes:
+      - chatwheel-db-prod:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: 'chatwheel'
+      MONGO_INITDB_ROOT_USERNAME_FILE: '/run/secrets/MONGO_INITDB_ROOT_USERNAME_FILE'
+      MONGO_INITDB_ROOT_PASSWORD_FILE: '/run/secrets/MONGO_INITDB_ROOT_PASSWORD_FILE'
+    command: mongod --replSet rs_chatwheel
+    secrets:
+      - MONGO_INITDB_ROOT_USERNAME_FILE
+      - MONGO_INITDB_ROOT_PASSWORD_FILE
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        window: 20s
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongo --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - chatwheel-backend-network
+
+
+volumes:
+  chatwheel-db-prod:
+    external: true
+
+networks:
+  chatwheel-backend-network:
+    external: true
+
+secrets:
+  MONGO_INITDB_ROOT_USERNAME_FILE:
+    external: true
+
+  MONGO_INITDB_ROOT_PASSWORD_FILE:
+    external: true

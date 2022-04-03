@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
 # Stop the existing stack
-echo -n 'Stop previous production stack...'
-echo -en '\n'
-docker stack rm chatwheel-production
-
-/bin/bash ./build-backend.sh
-
-/bin/bash ./build-frontend.sh
+#echo -n 'Stop previous production stack...'
+#echo -en '\n'
+#docker stack rm chatwheel-production
+#
+#/bin/bash ./build-backend.sh
+#
+#/bin/bash ./build-frontend.sh
 
 
 # Perform the database migrations - MANUALLY
@@ -46,14 +46,29 @@ docker stack rm chatwheel-production
     # the node-app should use the backend net
   # Create an individual script that gets up the database-migration stack and run migrations
 
-  # Create an individual stack that consists of nginx service and is intended to show a message for users when
-  # the app is being built up and unavailable for now
-
   # Rewrite the entire script this way
     # The application stack is being removed
-    # The stack with the message is getting up
-    # The building process is being conducted(pulling the source code and building new images)
-    # The database-migrations stack is getting up and migrations are being run
-    # The database-migrations stack is being removed
-    # The application stack is getting up
-    # The message stack is being removed
+echo -en '\n'
+echo -n 'Stop previous production stack...'
+echo -en '\n'
+docker stack rm chatwheel-production
+    # Get the container with the service message up and run
+      # Make sure that it publishes the 80:80 port
+
+echo -en '\n'
+echo -n 'Display the service message...'
+echo -en '\n'
+docker run --name update-service-message -p 80:80 -d wisecat/chatwheel-update-service-message
+
+  # The building process is being conducted(pulling the source code and building new images)
+  # The database-migrations stack is getting up and migrations are being run
+  # The database-migrations stack is being removed
+/bin/bash ./build-backend.sh
+
+/bin/bash ./build-frontend.sh
+
+  # The application stack is getting up
+docker stack deploy --compose-file docker/production-stack.yaml chatwheel-production
+
+  # The message stack is being removed
+docker container rm update-service-message --force

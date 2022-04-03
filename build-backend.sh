@@ -19,7 +19,7 @@ then
     git clone https://github.com/pavelkolomitkin/chatwheel-backend.git backend_src
 fi
 
-cd ./backend_src && git pull origin main && cd ..
+cd ./backend_src && git reset --hard HEAD && git pull origin main && cd ..
 
   # Build the backend app using the image built by the ./backend-app-build-tool.docker file
 docker run --rm -v $(pwd)/backend_src/app:/app -w /app wisecat/chatwheel-backend-build npm install --production
@@ -30,3 +30,10 @@ docker image rm wisecat/chatwheel-backend
   # Build the new version of the backend application with the ./docker/backend-app.docker getting it tagged with wisecat/chatwheel-backend
 docker build --no-cache -t wisecat/chatwheel-backend -f docker/backend-app.docker .
     # It should copy the production-build result formed by the build tools(see the ./backend_src/dist directory)
+
+# Run database migrations
+docker stack deploy --compose-file docker/database-migrations-stack.yaml database-migration-stack
+
+docker exec "$(docker container ls | grep node-app | awk '{print $(NF)}' | head -n 1)" npm run migrate-mongo up
+
+docker stack rm database-migration-stack
