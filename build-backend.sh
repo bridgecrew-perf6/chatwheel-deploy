@@ -34,6 +34,15 @@ docker build --no-cache -t wisecat/chatwheel-backend -f docker/backend-app.docke
 # Run database migrations
 docker stack deploy --compose-file docker/database-migrations-stack.yaml database-migration-stack
 
+# Waiting until the app is up and run
+echo -en '\n'
+echo 'Waiting until the app is up and run...'
+echo -en '\n'
+sleep 15
+
+echo -en '\n'
+echo 'Run database migrations...'
+echo -en '\n'
 docker exec "$(docker container ls | grep node-app | awk '{print $(NF)}' | head -n 1)" npm run migrate-mongo up
 
 docker stack rm database-migration-stack

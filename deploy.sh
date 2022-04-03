@@ -67,8 +67,10 @@ docker stack deploy --compose-file docker/update-service-message-stack.yaml upda
 
 /bin/bash ./build-frontend.sh
 
-  # The application stack is getting up
-docker stack deploy --compose-file docker/production-stack.yaml chatwheel-production
-
   # The message stack is being removed
 docker stack rm update-service-message
+  # The application stack is getting up
+
+sleep 5
+
+docker stack deploy --compose-file docker/production-stack.yaml chatwheel-production
